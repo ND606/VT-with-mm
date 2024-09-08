@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="version" content="1.2.3">
+  <title>VidTimer</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png?">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png?">
+  <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png?">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/icons/safari-pinned-tab.svg?" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#00aba9">
+  <meta name="theme-color" content="#ffffff">
+</head>
+
+<body class="stackedit">
+  <div class="main_div">
+    <h1>VidTimer</h1>
+    <h4>by Xiivler</h4>
+    <p>Determines the time between two points in a video in frames and in milliseconds.</p>
+    <p>Supports YouTube videos, Twitch VODs, Twitter videos, Google Drive videos, URLs that lead directly to a video file (ex. Discord attachments), and uploaded files.</p>
+    <p>Also supports Twitch clips if you install the Twitch Clip Timer <a href="https://chrome.google.com/webstore/detail/twitch-clip-timer/fdlhmdcegamkfdokpcbhcaeefihnpaeg">Chrome extension</a> or <a href="https://addons.mozilla.org/firefox/addon/twitch-clip-timer/">Firefox add-on</a>.</p>
+
+    <h3>Video</h3>
+    <p>
+      <input type="radio" id="useURL" name="videotype" checked onchange="changeVideoType()">
+      <label for="useURL">URL</label><br>
+      <input type="radio" id="useDownload" name="videotype" onchange="changeVideoType()">
+      <label for="useDownload">Upload File</label>
+    </p>
+    <p id="URLParagraph">
+      <input type="text" id="URL" style="width:50%" onchange="getVideoURL()">
+      <button id="loadVideo" onclick="getVideoURL()">Load Video</button>
+    </p>
+    <input type="file" id="browse" accept="video/*">
+
+    <h3>Video Framerate</h3>
+    <p>
+      <input type="radio" id="30FPS" name="FPS" onchange="changeFPS()">
+      <label for="30FPS">30 FPS</label><br>
+      <input type="radio" id="60FPS" name="FPS" checked onchange="changeFPS()">
+      <label for="60FPS">60 FPS</label>
+    </p>
+
+    <div>
+      <div class="left_column">
+        <h3>Start Frame</h3>
+        <video id="file_player1" width="480" height="270" controls controlsList="nodownload"></video>
+        <iframe id="yt_player1" width="480" height="270" src="https://www.youtube.com/embed/?enablejsapi=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+        <div id="twitch_player1"></div>
+        <p>
+          <button id="-1f1" onclick="frameAdvance(false, -1)">-1f</button>
+          <button id="+1f1" onclick="frameAdvance(false, 1)">+1f</button>
+          &emsp;
+          <button id="-10f1" onclick="frameAdvance(false, -5)">-5f</button>
+          <button id="+10f1" onclick="frameAdvance(false, 5)">+5f</button>
+          &emsp;
+          <button id="-1s1" onclick="secondAdvance(false, -1)">-1s</button>
+          <button id="+1s1" onclick="secondAdvance(false, 1)">+1s</button>
+          &emsp;
+          <button id="-5s1" onclick="secondAdvance(false, -5)">-5s</button>
+          <button id="+5s1" onclick="secondAdvance(false, 5)">+5s</button>
+        </p>
+        <p><input type="text" id="startFrameTime" style="width:40" readonly></p>
+        <p><button id="sync" onclick="setStartToEnd()">Set to Current End Frame</button></p>
+      </div>
+
+      <div style="float:left;">
+        <h3>End Frame</h3>
+        <video id="file_player2" width="480" height="270" controls controlsList="nodownload"></video>
+        <iframe id="yt_player2" width="480" height="270" src="https://www.youtube.com/embed/?enablejsapi=1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+        <div id="twitch_player2"></div>
+        <p>
+          <button id="-1f2" onclick="frameAdvance(true, -1)">-1f</button>
+          <button id="+1f2" onclick="frameAdvance(true, 1)">+1f</button>
+          &emsp;
+          <button id="-10f2" onclick="frameAdvance(true, -5)">-5f</button>
+          <button id="+10f2" onclick="frameAdvance(true, 5)">+5f</button>
+          &emsp;
+          <button id="-1s2" onclick="secondAdvance(true, -1)">-1s</button>
+          <button id="+1s2" onclick="secondAdvance(true, 1)">+1s</button>
+          &emsp;
+          <button id="-5s2" onclick="secondAdvance(true, -5)">-5s</button>
+          <button id="+5s2" onclick="secondAdvance(true, 5)">+5s</button>
+        </p>
+        <p><input type="text" id="endFrameTime" style="width:40" readonly></p>
+      </div>
+      <div style="clear:both;"></div>
+      <p id="debug"></p>
+    </div>
+
+    <h3>Segment Time</h3>
+    <p>
+      <label id="FPSLabel" for="frameTime"><code>60 FPS (ss:ff)</code></label>
+      <input type="text" id="frameTime" style="width:40" readonly>
+    </p>
+    <p id="60frameTimeParagraph">
+      <label id="60FPSLabel" for="frameTime60FPS"><code>60 FPS (ss:ff)</code></label>
+      <input type="text" id="frameTime60FPS" style="width:40" readonly>
+    </p>
+    <p>
+      <label for="msTime"><code>(hh:mm:ss.ms)</code></label>
+      <input type="text" id="msTime" style="width:40" readonly>
+    </p>
+    <p>
+      <label for="modNote"><code>Mod Message</code></label>
+      <input type="text" id="modNote" style="width:40%">
+    </p>
+    <p>
+      <button id="modNoteButton" onclick="copyModNote()">Copy Mod Message</button>
+      <button id="msToggleButton" onclick="toggleMilliseconds()">ms</button>
+    </p>
+    <br>
+
+    <div id="file_info">
+      <h3>Keyboard Shortcuts</h3>
+      <p><code>,</code> <code>.</code> Advance forward/backward 1 frame</p>
+      <p><code>shift</code> + <code>,</code> <code>.</code> Advance forward/backward 5 frames</p>
+      <p><code>⟷</code> Advance forward/backward 1 second</p>
+      <p><code>shift</code> + <code>⟷</code> Advance forward/backward 5 seconds</p>
+
+      <h3>Known Issues</h3>
+      <p>In Chrome, for some time when you first use the site, some Twitter clips may not load properly. Please be patient and keep reloading, as after some time the clips should load normally. Twitter clips behave much more reliably in Firefox.</p>
+      <p>To time a Google Drive video larger than 100 MB, you must enable anyone with the link to view.</p>
+    </div>
+
+    <div id="yt_info">
+      <h3>Keyboard Shortcuts</h3>
+      <p><code>,</code> <code>.</code> Advance forward/backward 1 frame by the video's actual framerate</p>
+      <p><code>⟷</code> Advance forward/backward 5 seconds</p>
+    </div>
+
+    <div id="twitch_info">
+      <h3>Inaccuracies in Timing</h3>
+      <p>Twitch stores its videos in shorter segments and stitches them together to form the video you see playing. As a result of this, any timing on Twitch can be <b>up to 2 frames faster or slower</b> than VidTimer displays (±0.033 seconds in 60 FPS).</p>
+    </div>
+  </div>
+
+  <script src="https://player.twitch.tv/js/embed/v1.js"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="main.js"></script>
+
+  <script>
+    function getVideoURL() {
+      const url = document.getElementById('URL').value;
+      if (url.includes('bilibili')) {
+        embedBilibiliVideos(url);
+      } else {
+        parseURL(url);
+      }
+    }
+
+    function embedBilibiliVideos(url) {
+      const bvid = extractBvidFromUrl(url);
+      if (!bvid) return;
+
+      // 既存のStart FrameとEnd Frame枠にBilibili動画を埋め込む
+      const startIframe = document.getElementById('yt_player1');
+      startIframe.src = `https://player.bilibili.com/player.html?bvid=${bvid}`;
+
+      const endIframe = document.getElementById('yt_player2');
+      endIframe.src = `https://player.bilibili.com/player.html?bvid=${bvid}`;
+    }
+
+    function extractBvidFromUrl(url) {
+      const match = url.match(/\/video\/([a-zA-Z0-9]+)/);
+      return match ? match[1] : null;
+    }
+
+    function changeVideoType() {
+      if (document.getElementById('useURL').checked) {
+        document.getElementById('URLParagraph').style.display = "block";
+        document.getElementById('browse').style.display = "none";
+      } else {
+        document.getElementById('URLParagraph').style.display = "none";
+        document.getElementById('browse').style.display = "block";
+      }
+    }
+
+    function frameAdvance(isPlayer2, frames) {
+      // フレームを進めるロジック
+    }
+
+    function secondAdvance(isPlayer2, seconds) {
+      // 秒単位で進めるロジック
+    }
+
+    function setStartToEnd() {
+      // Start FrameをEnd Frameに設定するロジック
+    }
+
+    function toggleMilliseconds() {
+      // ミリ秒の表示/非表示を切り替えるロジック
+    }
+
+    function copyModNote() {
+      // Mod Messageをコピーするロジック
+    }
+  </script>
+</body>
+
+</html>
