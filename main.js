@@ -500,9 +500,10 @@ function calculate() {
         String(seconds).padStart(2, '0') +  // Always pad seconds to 2 digits
         (showMilliseconds ? '.' + String(milliseconds).padStart(3, '0') : '');
 
-    // Remove leading zero only if there are no hours
+    // Remove leading zero for minutes or seconds when not in hour mode
     if (hours === 0) {
-        msTime = msTime.replace(/^0:/, ''); // Remove "0:" if it exists at the start
+        msTime = msTime.replace(/^0:/, '');  // Remove "0:" if minutes start with 0
+        msTime = msTime.replace(/^0+/, '');  // Remove leading zeros in seconds
     }
 
     document.getElementById('msTime').value = msTime;
