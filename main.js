@@ -515,17 +515,33 @@ function generateModNote() {
     // Get the current value of the hh:mm:ss.ms time
     let msTime = document.getElementById('msTime').value;
 
-    // Remove leading zeros only when they are followed by a digit greater than 0
-    msTime = msTime.replace(/^0:(\d{1,2})/, '$1'); // Remove leading zero in the format 0:xx
-    msTime = msTime.replace(/^00:(\d{1,2})/, '$1'); // In case of hours with leading zero
-    
+    // Split the time into components (hours, minutes, seconds, milliseconds)
+    let timeParts = msTime.split(':');
+
+    // If there are hours, leave them as is, but remove leading zeros from minutes and seconds
+    if (timeParts.length === 3) {
+        // Format hours, minutes, and seconds
+        let hours = timeParts[0].replace(/^0+/, ''); // Remove leading zeros from hours if any
+        let minutes = timeParts[1].replace(/^0+/, ''); // Remove leading zeros from minutes
+        let seconds = timeParts[2]; // Seconds already include milliseconds
+
+        // Rebuild the formatted time
+        msTime = `${hours}:${minutes}:${seconds}`;
+    } else if (timeParts.length === 2) {
+        // Format minutes and seconds
+        let minutes = timeParts[0].replace(/^0+/, ''); // Remove leading zeros from minutes
+        let seconds = timeParts[1]; // Seconds already include milliseconds
+
+        // Rebuild the formatted time
+        msTime = `${minutes}:${seconds}`;
+    }
+
     // Create the Mod note text
     let modNoteText = `Mod note: Retimed to ${msTime}`;
 
     // Set the Mod note text into the modNote input field
     document.getElementById('modNote').value = modNoteText;
 }
-
 
 
 //File mode specific
