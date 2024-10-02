@@ -511,9 +511,10 @@ function calculate() {
         msTime += `.${String(milliseconds).padStart(3, '0')}`;
     }
 
-    // Remove leading zero for seconds when minutes or seconds are less than 10 and no hours
-    if (hours === 0 && minutes === 0 && seconds < 1) {
-        msTime = `0${msTime}`;
+    // Handle the case where it's less than 1 second and there are no minutes (e.g., 0.067)
+    if (minutes === 0 && seconds < 1) {
+        msTime = `0${msTime}`; // Ensure "0" is added before milliseconds when less than 1 second
+        msTime = msTime.replace(/^00\./, '0.');  // Remove leading "00." and replace with "0."
     }
 
     document.getElementById('msTime').value = msTime;
