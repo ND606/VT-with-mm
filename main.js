@@ -493,23 +493,27 @@ function calculate() {
     seconds -= minutes * 60;
     let milliseconds = Math.round(frames / framerate * 1000);
 
-    // Format time without leading zeros
-    let msTime = 
-        (hours > 0 ? String(hours) + ':' : '') +  // Display hours only if greater than 0
-        String(minutes).padStart(1, '0') + ':' +  // Ensure minutes have no leading zeros
-        String(seconds).padStart(2, '0') +  // Always pad seconds to 2 digits
-        (showMilliseconds ? '.' + String(milliseconds).padStart(3, '0') : '');
+    // Format time based on conditions
+    let msTime = '';
+
+    if (hours > 0) {
+        msTime = `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    } else if (minutes > 0) {
+        // Ensure seconds are two digits if minutes exist
+        msTime = `${minutes}:${String(seconds).padStart(2, '0')}`;
+    } else {
+        // Show seconds only if there are no minutes, and add milliseconds if necessary
+        msTime = String(seconds);
+    }
+
+    // Add milliseconds if needed
+    if (showMilliseconds) {
+        msTime += `.${String(milliseconds).padStart(3, '0')}`;
+    }
 
     // Remove leading zero for seconds when minutes or seconds are less than 10 and no hours
-    if (hours === 0) {
-        msTime = msTime.replace(/^0:/, '');  // Remove "0:" if minutes start with 0
-        msTime = msTime.replace(/:0+/, ':'); // Remove leading zeros from seconds after colon
-        msTime = msTime.replace(/^0+/, '');  // Remove any leading zeros at the start
-
-        // If seconds are less than 1 second, ensure we keep the "0" for times like 0.117
-        if (minutes === 0 && seconds < 1) {
-            msTime = `0${msTime}`;
-        }
+    if (hours === 0 && minutes === 0 && seconds < 1) {
+        msTime = `0${msTime}`;
     }
 
     document.getElementById('msTime').value = msTime;
@@ -518,7 +522,6 @@ function calculate() {
     let modNoteDefault = `Mod note: Retimed to ${msTime}`;
     document.getElementById('modNote').value = modNoteDefault;
 }
-
 
 // Function to generate the mod note based on the current hh:mm:ss.ms time
 function generateModNote() {
