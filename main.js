@@ -502,9 +502,9 @@ function calculate() {
 
     // Remove leading zero for seconds when minutes or seconds are less than 10 and no hours
     if (hours === 0) {
-        msTime = msTime.replace(/^0+/, '');  // Remove leading zeros in minutes or seconds
         msTime = msTime.replace(/^0:/, '');  // Remove "0:" if minutes start with 0
         msTime = msTime.replace(/:0+/, ':'); // Remove leading zeros from seconds after colon
+        msTime = msTime.replace(/^0+/, '');  // Remove any leading zeros at the start
     }
 
     document.getElementById('msTime').value = msTime;
