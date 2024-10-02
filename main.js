@@ -496,19 +496,23 @@ function calculate() {
     seconds -= minutes * 60;
     let milliseconds = Math.round(frames / framerate * 1000);
 
-// 0が省略されないようにhh:mm:ss.msの表示をフォーマット
+    // 0が省略されないようにhh:mm:ss.msの表示をフォーマット
     let msTime = 
         (hours > 0 ? String(hours) + ':' : '') +  // 1時間以上の場合のみ時間を表示
         String(minutes).padStart(hours > 0 ? 2 : 1, '0') + ':' +  // 時間がある場合は2桁、ない場合は1桁
         String(seconds).padStart(2, '0') +  // 秒は常に2桁表示
         (showMilliseconds ? '.' + String(milliseconds).padStart(3, '0') : '');
     
+    // Leading zeros removal for any part of time that is greater than 1
+    msTime = msTime.replace(/\b0+([1-9]+)/g, '$1'); // Remove leading zeros from hours, minutes, or seconds
+
     document.getElementById('msTime').value = msTime;
 
-  // デフォルトで Mod note に時間をセット
+    // デフォルトで Mod note に時間をセット
     let modNoteDefault = `Mod note: Retimed to ${msTime}`;
     document.getElementById('modNote').value = modNoteDefault;
 }
+
 
 // Function to generate the mod note based on the current hh:mm:ss.ms time
 function generateModNote() {
