@@ -508,21 +508,16 @@ function calculate() {
 
     // Add milliseconds if needed
     if (showMilliseconds) {
-        msTime += `.${String(milliseconds).padStart(3, '0')}`;
+        let msPart = `.${String(milliseconds).padStart(3, '0')}`;
+        
+        // Check if tdp milliseconds should be hidden
+        if (!showTdpMilliseconds) {
+            msPart = '';  // Hide milliseconds
+        }
+
+        msTime += msPart;
     }
 
-    // Add milliseconds if needed
-　　if (showMilliseconds) {
-    let msPart = `.${String(milliseconds).padStart(3, '0')}`;
-    
-    // If the user has chosen to hide the last 3 digits (milliseconds)
-    if (!showTdpMilliseconds) {
-        msPart = '';  // Hide milliseconds
-    }
-    
-    msTime += msPart;
-　　}
-    
     // Handle the case where it's less than 1 second and there are no minutes (e.g., 0.067)
     if (minutes === 0 && seconds < 1) {
         msTime = msTime.replace(/^00\./, '0.');  // Replace "00." with "0." for cases like 00.067
@@ -531,11 +526,12 @@ function calculate() {
     }
 
     document.getElementById('msTime').value = msTime;
-　
+
     // Default Mod note
     let modNoteDefault = `Mod note: Retimed to ${msTime}`;
     document.getElementById('modNote').value = modNoteDefault;
 }
+
 
 
 // Function to generate the mod note based on the current hh:mm:ss.ms time
