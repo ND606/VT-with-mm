@@ -815,6 +815,24 @@ function toggleMilliseconds() {
     document.getElementById('modNote').value = modNoteField;
 }
 
+let showTdpMilliseconds = true; // State for controlling the last 3 digits (milliseconds)
+
+function toggleTdpMilliseconds() {
+    // Toggle the flag for showing the last 3 digits
+    showTdpMilliseconds = !showTdpMilliseconds;
+
+    // Update the button text and style
+    if (!showTdpMilliseconds) {
+        document.getElementById('tdpMsToggleButton').innerText = "tdp ms off";
+        document.getElementById('tdpMsToggleButton').style.color = "white"; // Make text white when off
+    } else {
+        document.getElementById('tdpMsToggleButton').innerText = "tdp ms on";
+        document.getElementById('tdpMsToggleButton').style.color = "black"; // Default black text when on
+    }
+
+    // Recalculate to update the time display based on the new setting
+    calculate();
+}
 
 function copyModNote() {
     // Get the modNote input field
