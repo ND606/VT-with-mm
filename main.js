@@ -496,14 +496,15 @@ function calculate() {
     // Format time without leading zeros
     let msTime = 
         (hours > 0 ? String(hours) + ':' : '') +  // Display hours only if greater than 0
-        String(minutes) + ':' +  // Do not pad minutes with zeros
+        String(minutes).padStart(1, '0') + ':' +  // Ensure minutes have no leading zeros
         String(seconds).padStart(2, '0') +  // Always pad seconds to 2 digits
         (showMilliseconds ? '.' + String(milliseconds).padStart(3, '0') : '');
 
-    // Remove leading zero for minutes or seconds when not in hour mode
+    // Remove leading zero for seconds when minutes or seconds are less than 10 and no hours
     if (hours === 0) {
+        msTime = msTime.replace(/^0+/, '');  // Remove leading zeros in minutes or seconds
         msTime = msTime.replace(/^0:/, '');  // Remove "0:" if minutes start with 0
-        msTime = msTime.replace(/^0+/, '');  // Remove leading zeros in seconds
+        msTime = msTime.replace(/:0+/, ':'); // Remove leading zeros from seconds after colon
     }
 
     document.getElementById('msTime').value = msTime;
@@ -512,6 +513,7 @@ function calculate() {
     let modNoteDefault = `Mod note: Retimed to ${msTime}`;
     document.getElementById('modNote').value = modNoteDefault;
 }
+
 
 
 // Function to generate the mod note based on the current hh:mm:ss.ms time
