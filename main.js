@@ -460,8 +460,7 @@ function twitch_setEndToStart() {
 
 //Calculate times
 function calculate() {
-
-    //get times in frames
+    // get times in frames
     let rawStartFrames = Math.floor(currentStartTime * framerate);
     let rawEndFrames = Math.floor(currentEndTime * framerate);
     let rawFrames = rawEndFrames - rawStartFrames;
@@ -496,22 +495,23 @@ function calculate() {
     seconds -= minutes * 60;
     let milliseconds = Math.round(frames / framerate * 1000);
 
-    // 0が省略されないようにhh:mm:ss.msの表示をフォーマット
+    // Format time and remove leading zeros from any part greater than 1
     let msTime = 
-        (hours > 0 ? String(hours) + ':' : '') +  // 1時間以上の場合のみ時間を表示
-        String(minutes).padStart(hours > 0 ? 2 : 1, '0') + ':' +  // 時間がある場合は2桁、ない場合は1桁
-        String(seconds).padStart(2, '0') +  // 秒は常に2桁表示
+        (hours > 0 ? String(hours) + ':' : '') +  // Display hours only if greater than 0
+        String(minutes) + ':' +  // Do not pad minutes with zeros
+        String(seconds).padStart(2, '0') +  // Always pad seconds to 2 digits
         (showMilliseconds ? '.' + String(milliseconds).padStart(3, '0') : '');
-    
-    // Leading zeros removal for any part of time that is greater than 1
-    msTime = msTime.replace(/\b0+([1-9]+)/g, '$1'); // Remove leading zeros from hours, minutes, or seconds
+
+    // Remove leading zeros in the minutes or seconds section if the value is greater than 1
+    msTime = msTime.replace(/^0+/, ''); // Remove leading zero from minutes if necessary
 
     document.getElementById('msTime').value = msTime;
 
-    // デフォルトで Mod note に時間をセット
+    // Default Mod note
     let modNoteDefault = `Mod note: Retimed to ${msTime}`;
     document.getElementById('modNote').value = modNoteDefault;
 }
+
 
 
 // Function to generate the mod note based on the current hh:mm:ss.ms time
