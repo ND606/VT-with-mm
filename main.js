@@ -511,15 +511,6 @@ function calculate() {
         msTime += `.${String(milliseconds).padStart(3, '0')}`;
     }
 
-    // Handle the case where it's less than 1 second and there are no minutes (e.g., 0.067)
-    if (minutes === 0 && seconds < 1) {
-        msTime = msTime.replace(/^00\./, '0.');  // Replace "00." with "0." for cases like 00.067
-    } else if (minutes === 0) {
-        msTime = msTime.replace(/^0/, '');  // Remove leading zero from seconds for cases like 00.350
-    }
-
-    document.getElementById('msTime').value = msTime;
-
     // Add milliseconds if needed
 　　if (showMilliseconds) {
     let msPart = `.${String(milliseconds).padStart(3, '0')}`;
@@ -531,8 +522,16 @@ function calculate() {
     
     msTime += msPart;
 　　}
-　
+    
+    // Handle the case where it's less than 1 second and there are no minutes (e.g., 0.067)
+    if (minutes === 0 && seconds < 1) {
+        msTime = msTime.replace(/^00\./, '0.');  // Replace "00." with "0." for cases like 00.067
+    } else if (minutes === 0) {
+        msTime = msTime.replace(/^0/, '');  // Remove leading zero from seconds for cases like 00.350
+    }
 
+    document.getElementById('msTime').value = msTime;
+　
     // Default Mod note
     let modNoteDefault = `Mod note: Retimed to ${msTime}`;
     document.getElementById('modNote').value = modNoteDefault;
