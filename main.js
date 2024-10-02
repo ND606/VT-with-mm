@@ -513,8 +513,7 @@ function calculate() {
 
     // Handle the case where it's less than 1 second and there are no minutes (e.g., 0.067)
     if (minutes === 0 && seconds < 1) {
-        msTime = `0${msTime}`; // Ensure "0" is added before milliseconds when less than 1 second
-        msTime = msTime.replace(/^00\./, '0.');  // Remove leading "00." and replace with "0."
+        msTime = msTime.replace(/^00/, '0');  // Replace leading "00" with "0" for cases like 00.067
     }
 
     document.getElementById('msTime').value = msTime;
@@ -523,6 +522,7 @@ function calculate() {
     let modNoteDefault = `Mod note: Retimed to ${msTime}`;
     document.getElementById('modNote').value = modNoteDefault;
 }
+
 
 // Function to generate the mod note based on the current hh:mm:ss.ms time
 function generateModNote() {
