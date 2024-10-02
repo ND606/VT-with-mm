@@ -520,6 +520,19 @@ function calculate() {
 
     document.getElementById('msTime').value = msTime;
 
+    // Add milliseconds if needed
+　　if (showMilliseconds) {
+    let msPart = `.${String(milliseconds).padStart(3, '0')}`;
+    
+    // If the user has chosen to hide the last 3 digits (milliseconds)
+    if (!showTdpMilliseconds) {
+        msPart = '';  // Hide milliseconds
+    }
+    
+    msTime += msPart;
+　　}
+　
+
     // Default Mod note
     let modNoteDefault = `Mod note: Retimed to ${msTime}`;
     document.getElementById('modNote').value = modNoteDefault;
