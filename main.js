@@ -508,14 +508,7 @@ function calculate() {
 
     // Add milliseconds if needed
     if (showMilliseconds) {
-        let msPart = `.${String(milliseconds).padStart(3, '0')}`;
-        
-        // Check if tdp milliseconds should be hidden
-        if (!showTdpMilliseconds) {
-            msPart = '';  // Hide milliseconds
-        }
-
-        msTime += msPart;
+        msTime += `.${String(milliseconds).padStart(3, '0')}`;
     }
 
     // Handle the case where it's less than 1 second and there are no minutes (e.g., 0.067)
@@ -531,7 +524,6 @@ function calculate() {
     let modNoteDefault = `Mod note: Retimed to ${msTime}`;
     document.getElementById('modNote').value = modNoteDefault;
 }
-
 
 
 // Function to generate the mod note based on the current hh:mm:ss.ms time
@@ -823,24 +815,6 @@ function toggleMilliseconds() {
     document.getElementById('modNote').value = modNoteField;
 }
 
-let showTdpMilliseconds = true; // State for controlling the last 3 digits (milliseconds)
-
-function toggleTdpMilliseconds() {
-    // Toggle the flag for showing the last 3 digits
-    showTdpMilliseconds = !showTdpMilliseconds;
-
-    // Update the button text and style
-    if (!showTdpMilliseconds) {
-        document.getElementById('tdpMsToggleButton').innerText = "tdp ms off";
-        document.getElementById('tdpMsToggleButton').style.color = "white"; // Make text white when off
-    } else {
-        document.getElementById('tdpMsToggleButton').innerText = "tdp ms on";
-        document.getElementById('tdpMsToggleButton').style.color = "black"; // Default black text when on
-    }
-
-    // Recalculate to update the time display based on the new setting
-    calculate();
-}
 
 function copyModNote() {
     // Get the modNote input field
