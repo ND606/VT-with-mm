@@ -505,6 +505,11 @@ function calculate() {
         msTime = msTime.replace(/^0:/, '');  // Remove "0:" if minutes start with 0
         msTime = msTime.replace(/:0+/, ':'); // Remove leading zeros from seconds after colon
         msTime = msTime.replace(/^0+/, '');  // Remove any leading zeros at the start
+
+        // If seconds are less than 1 second, ensure we keep the "0" for times like 0.117
+        if (minutes === 0 && seconds < 1) {
+            msTime = `0${msTime}`;
+        }
     }
 
     document.getElementById('msTime').value = msTime;
@@ -513,7 +518,6 @@ function calculate() {
     let modNoteDefault = `Mod note: Retimed to ${msTime}`;
     document.getElementById('modNote').value = modNoteDefault;
 }
-
 
 
 // Function to generate the mod note based on the current hh:mm:ss.ms time
