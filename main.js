@@ -510,6 +510,20 @@ function calculate() {
     document.getElementById('modNote').value = modNoteDefault;
 }
 
+// Function to generate the mod note based on the current hh:mm:ss.ms time
+function generateModNote() {
+    // Get the current value of the hh:mm:ss.ms time
+    let msTime = document.getElementById('msTime').value;
+
+    // Modify msTime to remove leading zeros before the seconds (if there is a 0 before the colon)
+    msTime = msTime.replace(/^0+/, ''); // Remove leading zero
+
+    // Create the Mod note text
+    let modNoteText = `Mod note: Retimed to ${msTime}`;
+
+    // Set the Mod note text into the modNote input field
+    document.getElementById('modNote').value = modNoteText;
+}
 
 
 //File mode specific
