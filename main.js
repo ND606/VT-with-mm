@@ -499,11 +499,11 @@ function calculate() {
     if (hours > 0) {
         msTime = `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     } else if (minutes > 0) {
-        // Ensure seconds are two digits if minutes exist
+        // Ensure seconds are always two digits if minutes exist
         msTime = `${minutes}:${String(seconds).padStart(2, '0')}`;
     } else {
         // Show seconds only if there are no minutes, and add milliseconds if necessary
-        msTime = String(seconds);
+        msTime = String(seconds).padStart(1, '0');  // Always pad seconds to at least 1 digit
     }
 
     // Add milliseconds if needed
