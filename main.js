@@ -503,7 +503,7 @@ function calculate() {
         msTime = `${minutes}:${String(seconds).padStart(2, '0')}`;
     } else {
         // Show seconds only if there are no minutes, and add milliseconds if necessary
-        msTime = String(seconds).padStart(1, '0');  // Always pad seconds to at least 1 digit
+        msTime = String(seconds);  // No padding for seconds
     }
 
     // Add milliseconds if needed
@@ -513,7 +513,9 @@ function calculate() {
 
     // Handle the case where it's less than 1 second and there are no minutes (e.g., 0.067)
     if (minutes === 0 && seconds < 1) {
-        msTime = msTime.replace(/^00/, '0');  // Replace leading "00" with "0" for cases like 00.067
+        msTime = msTime.replace(/^00\./, '0.');  // Replace "00." with "0." for cases like 00.067
+    } else if (minutes === 0) {
+        msTime = msTime.replace(/^0/, '');  // Remove leading zero from seconds for cases like 00.350
     }
 
     document.getElementById('msTime').value = msTime;
