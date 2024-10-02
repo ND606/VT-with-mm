@@ -456,8 +456,6 @@ function twitch_setEndToStart() {
     calculate();
 }
 
-
-
 //Calculate times
 function calculate() {
     // get times in frames
@@ -495,15 +493,17 @@ function calculate() {
     seconds -= minutes * 60;
     let milliseconds = Math.round(frames / framerate * 1000);
 
-    // Format time and remove leading zeros from any part greater than 1
+    // Format time without leading zeros
     let msTime = 
         (hours > 0 ? String(hours) + ':' : '') +  // Display hours only if greater than 0
         String(minutes) + ':' +  // Do not pad minutes with zeros
         String(seconds).padStart(2, '0') +  // Always pad seconds to 2 digits
         (showMilliseconds ? '.' + String(milliseconds).padStart(3, '0') : '');
 
-    // Remove leading zeros in the minutes or seconds section if the value is greater than 1
-    msTime = msTime.replace(/^0+/, ''); // Remove leading zero from minutes if necessary
+    // Remove leading zero only if there are no hours
+    if (hours === 0) {
+        msTime = msTime.replace(/^0:/, ''); // Remove "0:" if it exists at the start
+    }
 
     document.getElementById('msTime').value = msTime;
 
@@ -511,7 +511,6 @@ function calculate() {
     let modNoteDefault = `Mod note: Retimed to ${msTime}`;
     document.getElementById('modNote').value = modNoteDefault;
 }
-
 
 
 // Function to generate the mod note based on the current hh:mm:ss.ms time
