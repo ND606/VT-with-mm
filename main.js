@@ -515,8 +515,8 @@ function generateModNote() {
     // Get the current value of the hh:mm:ss.ms time
     let msTime = document.getElementById('msTime').value;
 
-    // Modify msTime to remove leading zeros before the seconds (if there is a 0 before the colon)
-    msTime = msTime.replace(/^0+/, ''); // Remove leading zero
+    // Remove leading zeros from each section (hours, minutes, seconds)
+    msTime = msTime.replace(/\b0+(\d)/g, '$1'); // Remove leading zeros from any section if the number is greater than 0
 
     // Create the Mod note text
     let modNoteText = `Mod note: Retimed to ${msTime}`;
