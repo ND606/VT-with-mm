@@ -406,7 +406,11 @@ function twitch_secondAdvance(isPlayer2, seconds) {
         twitch_setEndToStart();
 }
 
-
+// minuteAdvance
+function minuteAdvance(isPlayer2, minutes) {
+    // 分を秒に変換してsecondAdvanceに渡す
+    secondAdvance(isPlayer2, minutes * 60);
+}
 
 //Set start to end and end to start
 function setStartToEnd() {
